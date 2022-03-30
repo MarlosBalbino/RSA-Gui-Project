@@ -3,13 +3,12 @@ from gui.widgets.my_widgets import MyWidgets
 from qt_core import *
 
 # IMPORT PAGES
-from gui.pages.ui_pages import Ui_application_pages
+from gui.pages.ui_page1 import UI_ApplicationPage1
+from gui.pages.ui_page2 import UI_ApplicationPage2
+from gui.pages.ui_page3 import UI_ApplicationPage3
 
 # IMPORT CUSTOM WIDGETS
 from gui.widgets.py_push_button import PyPushButton
-
-#IMPORT PAGES
-from gui.pages.ui_pages import Ui_application_pages 
 
 # MAIN WINDOW
 class UI_MainWindow(object):
@@ -20,7 +19,7 @@ class UI_MainWindow(object):
             parent.setObjectName("MainWindow")
         
         # SET INCINALS PARAMETERS
-        parent.resize(1200, 720)
+        parent.resize(1280, 720)
         parent.setMinimumSize(720, 480)
 
         # CREATE MAIN FRAME
@@ -168,9 +167,15 @@ class UI_MainWindow(object):
         # APPLICATION PAGES
         self.pages = QStackedWidget()
         self.pages.setStyleSheet("font-size: 12pt; color: #f8f8f2")
-        self.ui_pages = Ui_application_pages()
-        self.ui_pages.setupUi(self.pages)
-        self.pages.setCurrentWidget(self.ui_pages.page_1)
+        self.pages.setWindowTitle("application_pages")
+        self.pages.resize(622, 515)
+        self.ui_page1 = UI_ApplicationPage1()
+        self.ui_page1.setupUi(self.pages)
+        self.ui_page2 = UI_ApplicationPage2()
+        self.ui_page2.setupUi(self.pages)
+        self.ui_page3 = UI_ApplicationPage3()
+        self.ui_page3.setupUi(self.pages)
+        self.pages.setCurrentWidget(self.ui_page1.page)
 
         # BOTTOM BAR
         self.bottom_bar = QFrame()

@@ -1,9 +1,14 @@
+from pkgutil import extend_path
 import sys
 import os
 import time
 import threading
 from turtle import width
+
+from pkg_resources import to_filename
 from qt_core import *
+from app.char_codec import CharCodec
+from app.rsa import RSA
 
 # IMPORT MAIN WINDOW
 from gui.windows.main_window.ui_main_window import *
@@ -20,6 +25,7 @@ class MainWindow(QMainWindow):
         self.ui = UI_MainWindow()  
         self.ui.setup_ui(self)
         
+        # UI BUTTONS
         # Toggle button 
         self.ui.toggle_btn.clicked.connect(self.toggle_button)
         # Show pages
@@ -33,8 +39,7 @@ class MainWindow(QMainWindow):
         # Show settings
         self.ui.settings_btn.clicked.connect(self.hidden_menu)
 
-        # Get text encrypt box
-        self.ui.ui_pages.text_ok_btn.clicked.connect(self.get_text)
+        
 
         # LEFT HIDDEN MENU
         self.mw = MyWidgets()
@@ -43,24 +48,6 @@ class MainWindow(QMainWindow):
         
         # EXIBE A APLICAÇÂO
         self.show()
-
-    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
-        event.accept()
-
-    def dropEvent(self, event: QDropEvent) -> None:
-        event.setDropAction(Qt.CopyAction)        
-        file_path = event.mimeData().urls()[0].toLocalFile()
-
-        self.read_file(file_path)
-
-        if ".rsa" in file_path:
-            self.show_page_3()
-        else:
-            self.show_page_2()
-            self.ui.ui_pages.text_box.insertPlainText(self.file_content)
-            
-
-        event.accept()
 
     def reset_selection(self):
         for btn in self.ui.left_menu.findChildren(QPushButton):
@@ -71,21 +58,21 @@ class MainWindow(QMainWindow):
     
     def show_page_1(self):
         self.reset_selection()
-        self.ui.pages.setCurrentWidget(self.ui.ui_pages.page_1)
+        self.ui.pages.setCurrentWidget(self.ui.ui_page1.page)
         self.ui.top_left_label.setText("Generate keys manually or automatically.")
         self.ui.top_right_label.setText("Keys")
         self.ui.btn_1.set_active(True)
 
     def show_page_2(self):
         self.reset_selection()
-        self.ui.pages.setCurrentWidget(self.ui.ui_pages.page_2)
+        self.ui.pages.setCurrentWidget(self.ui.ui_page2.page)
         self.ui.top_left_label.setText("Write a message to encrypt or drop a file.")
         self.ui.top_right_label.setText("Encrypt")
         self.ui.btn_2.set_active(True)
 
     def show_page_3(self):
         self.reset_selection()
-        self.ui.pages.setCurrentWidget(self.ui.ui_pages.page_3)
+        self.ui.pages.setCurrentWidget(self.ui.ui_page3.page)
         self.ui.top_left_label.setText("Write a massage to decrypt or drop a file.")
         self.ui.top_right_label.setText("Decrypt")
         self.ui.btn_3.set_active(True)
@@ -106,7 +93,7 @@ class MainWindow(QMainWindow):
         self.animation.setDuration(150)
         self.animation.start()
 
-    @Slot()
+
     def hidden_menu(self):
         # Get hidden menu width
         menu_width = self.mw.hidden_menu.width()
@@ -127,25 +114,61 @@ class MainWindow(QMainWindow):
             self.animation.setDuration(150)
             self.animation.finished.connect(self.mw.hidden_frame.hide)
             self.animation.start()
+       
+    def dragEnterEvent(self, event: QDragEnterEvent) -> None:
+        event.accept()
+
+    def dropEvent(self, event: QDropEvent) -> None:
+        event.setDropAction(Qt.CopyAction)        
+        file_path = event.mimeData().urls()[0].toLocalFile()
+
+        self.read_file(file_path)
+        self.insertTextToProperlyPage(file_path)
+
+        event.accept()
 
     def open_file(self):
-        file_name = QFileDialog.getOpenFileName(self, "Open File")
-        print(file_name)
+        default_path = os.path.expanduser("~")
+        file_path = QFileDialog.getOpenFileName(self, "Open File", dir=default_path + "/desktop")[0]
+
+        print(file_path)
+        self.read_file(file_path)
+        self.insertTextToProperlyPage(file_path)
+
+    def insertTextToProperlyPage(self, file_path):
+        if ".rsa" in file_path:
+            self.show_page_3()
+            self.ui.ui_page3.decrypt_box_1.text_box.insertPlainText(self.printable_content)
+        else:
+            self.show_page_2()
+            self.ui.ui_page2.encrypt_box_1.text_box.insertPlainText(self.printable_content)
 
     def read_file(self, file_path):
-        file = open(file_path, 'r')
-        self.file_content = file.read()
+        file = open(file_path, 'rb')
+
+        file_content = CharCodec()
+        self.file_content = file_content.bytesToStr(file)
+        print(self.file_content)
+
+        file.seek(0)
+
+        printable_content = CharCodec()
+        self.printable_content = printable_content.bytesToStr(file, remove_char=0)
+
         file.close()
 
     def save_file(self):
-        save_path = QFileDialog.getExistingDirectory(self, "Save As")
-        print(save_path)
+        default_path = os.path.expanduser("~")
+        save_path = QFileDialog.getSaveFileName(self, "Save As", dir=default_path + "/untitled.txt")
+        file = open(save_path + "/teste.txt", "w")
 
-    def get_text(self):
-        text = self.ui.ui_pages.text_box.toPlainText()
-        self.ui.ui_pages.text_box.insertPlainText("muito doido")
-        print(text)
+        try:
+            file.write(self.text)
+        except AttributeError:
+            print("Não há arquivo a ser salvo!")
 
+        file.close()
+    
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

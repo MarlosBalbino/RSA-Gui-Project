@@ -1,54 +1,47 @@
 import os
+from turtle import st
+from app.char_codec import CharCodec
 
 
 class RSA:
 
-    def encrypt(self, n, e, file_name):
+    def encrypt(self, n: int, e: int, content: str) -> str:
 
-        # OPEN INPUT FILE AND OUTPUT FILE
-        file = open(file_name, 'rb')
-        outputFile = open(f'{file_name}.rsa', 'w')
-
+        outputContent = ""
         # RUN ORIGINAL FILE
-        while 1:
-            M = file.read(1)
-            if not M:
-                break
-            C = self.QuickMod(ord(M), e, n)
-            outputFile.write(f'{C} ')
+        for M in content:
+            C = self.__QuickMod(ord(M), e, n)
+            outputContent += str(C) + ' '
 
-        file.close()
-        outputFile.close()
+        return outputContent[:-1] # retorna sem o último caractere
 
-    def decrypt(self, p, q, e, file_name):
+    def encryptChar(self, n: int, e: int, M: str) -> str:
+        C = self.__QuickMod(ord(M), e, n)
+        return C
 
-        # OPEN INPUT FILE AND OUTPUT FILE
-        file = open(file_name, 'r')
-        output_file = open(f'(original){file_name[:-3]}', 'wb')
-
+    def decrypt(self, p: int, q: int, e: int, content: str) -> str:
+        
+        outputContent = ""
         # GETS THE INVERSE KEY
-        d = self.inverse(e, (p - 1) * (q - 1))
+        d = self.__inverse(e, (p - 1) * (q - 1))
 
-        # RUN ENCRYPTED FILE/MESSAGE
-        for line in file:
-            lineValues = line.split()
-            for C in lineValues:
-                M = self.QuickMod(int(C), d, p * q)
+        # RUN ENCRYPTED MESSAGE        
+        contentValues = self.content.split()
+        for C in contentValues:
+            M = self.__QuickMod(int(C), d, p * q)
 
-                # convert int to bytes type and write in output file
-                output_file.write(M.to_bytes(1, byteorder='big'))
+            # convert int to bytes type and write in output file
+            outputContent += str(M)
 
-        file.close()
-        output_file.close()
+        return outputContent
 
-    @staticmethod
-    def dir():
-        'lista os arquivos do diretório relativo'
-        for f in os.listdir():
-            print(f)
+    def decryptChar(self, p: int, q: int, e: int, C: str) -> str:
+        d = self.__inverse(e, (p - 1) * (q - 1))
+        M = self.__QuickMod(int(C), d, p * q)
+        return str(M)
 
     @staticmethod
-    def QuickMod(base, exp, n):
+    def __QuickMod(base, exp, n):
         """retorna o resultado de base^exp mod(n) através da exponenciação rápida"""
 
         result = 1
@@ -60,8 +53,9 @@ class RSA:
 
         return result
 
+
     @classmethod
-    def linearOperation(cls, a, b, mdc, i):
+    def __linearOperation(cls, a, b, mdc, i):
         """resolve a operação linear do tipo mdc(a, b) = sa + tb = 1"""
         t = -int(a / b)
         r = a % b
@@ -71,7 +65,7 @@ class RSA:
             return mdc
 
         # recebe a ultima operação do mdc cujo resultado é 1 ( mdc(a, b) = sa + tb = 1 )
-        inverseLine = cls.linearOperation(b, r, mdc, i + 1)
+        inverseLine = cls.__linearOperation(b, r, mdc, i + 1)
 
         s = inverseLine[i][0]
         t = inverseLine[i][2]
@@ -82,7 +76,7 @@ class RSA:
         inverseLine.remove(inverseLine[i])
         return inverseLine  # retorna a última lista com o inverso incluso
 
-    def inverse(self, e, φ):
+    def __inverse(self, e, φ):
         """recebe e, φ; retorna inverso de e ≡ 1 mod(φ)"""
         inverseLine = self.linearOperation(e, φ, [], 1)
         inverse = inverseLine[0][0]

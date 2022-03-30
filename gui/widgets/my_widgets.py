@@ -5,7 +5,7 @@ from gui.widgets.py_push_button import PyPushButton
 
 class MyWidgets(object):
 
-    def leftHiddenMenu(self, parent):
+    def leftHiddenMenu(self, parent=None):
         # LEFT HIDDEN MENU
         #////////////////////////////////////////////////////////////////////
         # HIDDEN FRAME
@@ -41,3 +41,156 @@ class MyWidgets(object):
         # ADD HIDDEN BTN TO HIDDEN FRAME
         self.hidden_layout.addWidget(self.hidden_menu)
         self.hidden_layout.addWidget(self.hidden_btn_frame)
+
+    def textBox(self, 
+        parent=None, 
+        label_text="", 
+        btn_text="", 
+        size=QSize(500, 250),
+        text_box_color="#282a36"
+        ):
+        # TEXT BOX
+        #////////////////////////////////////////////////////////////////////
+        # TEXT BOX FRAME
+        self.text_box_frame = QFrame(parent=parent)
+        self.text_box_frame.setStyleSheet("background-color: #44475a; border-radius: 5")
+        self.text_box_frame.setMaximumSize(size)
+        self.text_box_frame.setMinimumSize(size)
+
+        # LABEL TEXT
+        self.text_label = QLabel(self.text_box_frame)
+        self.text_label.setText(label_text)
+        self.text_label.setStyleSheet("font: 700 12pt Segoe UI; color: rgb(255, 255, 255)")
+
+        # CUSTOM VERTICAL SCROLL BAR
+        self.vertical_scroll_bar = MyScrollBar()
+
+        # TEXT BOX
+        self.text_box = QTextEdit(self.text_box_frame)
+        self.text_box.setMaximumSize(QSize(482, 178))
+        self.text_box.setMinimumSize(QSize(482, 178))
+        self.text_box.setStyleSheet(f"""color: white; font-size: 12pt; 
+            border-radius: 5; background-color: {text_box_color}""")
+        self.text_box.setVerticalScrollBar(self.vertical_scroll_bar)
+        self.text_box.setAcceptRichText(True)
+
+        # DONE BUTTON
+        self.done_btn = QPushButton(btn_text)
+        self.done_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #8489a6;
+                border-radius: 10px;
+                font-size: 12pt;
+            }
+            QPushButton:hover {
+                background-color: #c3ccdf;
+            }    
+            QPushButton:pressed {
+                background-color: #44475a;
+            }        
+        """)
+        self.done_btn.setMaximumWidth(72)
+        self.done_btn.setMaximumHeight(20)
+
+        # TEXT BOX LAYOUT
+        self.text_box_layout = QVBoxLayout(self.text_box_frame)
+        self.text_box_layout.addWidget(self.text_label)
+        self.text_box_layout.addWidget(self.text_box)
+        self.text_box_layout.addWidget(self.done_btn)
+
+
+class MyScrollBar(QScrollBar):
+
+    def __init__(self):
+        super().__init__()
+
+        self.setStyleSheet("""
+            /*VERTICAL SCROLL BAR*/
+            QScrollBar:vertical {
+                border: none;
+                background-color: #282a36;
+                width: 10px;
+                margin: 10px 0 10px 0;
+                border-radius: 0px;
+            }
+
+            /*VERTICAL SCROLL BAR HENDLE*/
+            QScrollBar::handle:vertical {
+                background-color: #8489a6;
+                min-height: 30px;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background-color: #c3ccdf;
+            }
+            QScrollBar::handle:vertical:pressed {
+                background-color: #44475a
+            }
+
+            /*SCROLL BAR TOP BUTTOM*/
+            QScrollBar::sub-line:vertical {
+                border: none;
+                background-color: #8489a6;
+                height: 10px;
+                /*
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                */
+                border-radius: 5px;
+                subcontrol-position: top;
+                subcontrol-origin: margin;
+            }
+            QScrollBar::sub-line:vertical:hover {
+                background-color: #c3ccdf;
+            }
+            QScrollBar::sub-line:vertical:pressed {
+                background-color: #44475a;
+            }
+
+            /*SCROLL BAR BOTTOM BUTTOM*/
+            QScrollBar::add-line:vertical {
+                border: none;
+                background-color: #8489a6;
+                height: 10px;
+                /*
+                border-bottom-left-radius: 5px;
+                border-bottom-right-radius: 5px;
+                */
+                border-radius: 5px;
+                subcontrol-position: bottom;
+                subcontrol-origin: margin;
+            }
+            QScrollBar::add-line:vertical:hover {
+                background-color: #c3ccdf;
+            }
+            QScrollBar::add-line:vertical:pressed {
+                background-color: #44475a;
+            }
+
+            /*RESET ARROW*/
+            QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+                background: none;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """)
+        
+
+class MyAnimation(QPropertyAnimation):
+
+    def __init__(self, parent, start_width, end_width, duration=300):
+        super().__init__(parent, b"minimumWidth")
+
+        # Frame width
+        frame_width = parent.width()
+
+        # Check width
+        width = start_width
+        if frame_width == start_width:
+            width = end_width
+
+        # Start animation
+        self.setStartValue(frame_width)
+        self.setEndValue(width)
+        self.setDuration(duration)
