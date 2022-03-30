@@ -179,18 +179,31 @@ class MyScrollBar(QScrollBar):
 
 class MyAnimation(QPropertyAnimation):
 
-    def __init__(self, parent, start_width, end_width, duration=300):
+    def __init__(
+        self, 
+        parent, 
+        start_width, 
+        end_width, 
+        duration=300
+        ):
+
         super().__init__(parent, b"minimumWidth")
 
+        self._parent = parent
+        self.start_width = start_width
+        self.end_width = end_width
+        self._duration = duration
+
+    def reset(self):
         # Frame width
-        frame_width = parent.width()
+        frame_width = self._parent.width()
 
         # Check width
-        width = start_width
-        if frame_width == start_width:
-            width = end_width
+        width = self.start_width
+        if frame_width == self.start_width:
+            width = self.end_width
 
         # Start animation
         self.setStartValue(frame_width)
         self.setEndValue(width)
-        self.setDuration(duration)
+        self.setDuration(self._duration)
