@@ -9,6 +9,7 @@ from pkg_resources import to_filename
 from qt_core import *
 from app.char_codec import CharCodec
 from app.rsa import RSA
+from gui.widgets.my_widgets import ExpandAnimation
 
 # IMPORT MAIN WINDOW
 from gui.windows.main_window.ui_main_window import *
@@ -24,6 +25,14 @@ class MainWindow(QMainWindow):
         # SETUP MAIN WINDOW
         self.ui = UI_MainWindow()  
         self.ui.setup_ui(self)
+
+        # LEFT MENU ANIMATION
+        self.left_menu_animation = ExpandAnimation(
+            self.ui.left_menu,
+            start_width = 50,
+            end_width = 240,
+            duration = 150
+        )
         
         # UI BUTTONS
         # Toggle button 
@@ -42,8 +51,14 @@ class MainWindow(QMainWindow):
         
 
         # LEFT HIDDEN MENU
-        self.mw = MyWidgets()
-        self.mw.leftHiddenMenu(self.ui.main_frame)
+        self.mw = MyWidgets.HiddenMenu(self.ui.main_frame)
+
+        self.effect = QGraphicsOpacityEffect(self.mw.hidden_menu)
+        self.effect.setOpacity(1.00)
+
+        self.mw.hidden_menu.setGraphicsEffect(self.effect)
+        self.mw.hidden_menu.setAutoFillBackground(True)
+
         self.mw.hidden_btn.clicked.connect(self.hidden_menu)
         
         # EXIBE A APLICAÇÂO
@@ -98,22 +113,42 @@ class MainWindow(QMainWindow):
         # Get hidden menu width
         menu_width = self.mw.hidden_menu.width()
         
-        self.animation = QPropertyAnimation(self.mw.hidden_menu, b"minimumWidth")   
+        self.animation = QPropertyAnimation(self.mw.hidden_menu, b"minimumWidth")
+        
 
+        width = 400
         # Check width
-        if menu_width != 240:
-            self.mw.hidden_frame.show()
+        if menu_width != width:
+            self.mw.show()
             self.animation.setStartValue(menu_width)
-            self.animation.setEndValue(240)
+            self.animation.setEndValue(width)
             self.animation.setDuration(150)
-            self.animation.start()
         
         else:
             self.animation.setStartValue(menu_width)
             self.animation.setEndValue(0)
-            self.animation.setDuration(150)
-            self.animation.finished.connect(self.mw.hidden_frame.hide)
-            self.animation.start()
+            self.animation.finished.connect(self.mw.hide)
+            self.animation.setDuration(250)
+        
+        self.animation.start()
+
+        self.anima = QPropertyAnimation(self.effect, b"opacity")
+        self.anima.setEasingCurve(QEasingCurve.InOutCubic)
+        self.anima.setDuration(250)
+
+        effect_opacity = self.effect.opacity()
+
+        opacity = 0
+        if menu_width == width:            
+            self.anima.setStartValue(effect_opacity)
+            self.anima.setEndValue(opacity)
+            self.anima.start()
+        else:
+            self.effect.setOpacity(1.00)
+
+             
+        
+        
        
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         event.accept()

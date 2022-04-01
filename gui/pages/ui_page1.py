@@ -12,4 +12,6 @@ class UI_ApplicationPage1(object):
         # PAGE 1 CONTENT
         self.page = QWidget()
         self.verticalLayout = QVBoxLayout(self.page)
+
+        
         application_pages.addWidget(self.page)

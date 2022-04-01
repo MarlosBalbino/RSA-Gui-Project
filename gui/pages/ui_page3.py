@@ -20,19 +20,19 @@ class UI_ApplicationPage3(object):
         self.central_layout.setContentsMargins(0,0,0,0)
         self.central_layout.setSpacing(10)
 
-        self.decrypt_box_1 = MyWidgets()
-        self.decrypt_box_1.textBox(self.page, "Write something to decrypt:", "Done", QSize(500, 250))
-        self.decrypt_box_2 = MyWidgets()
-        self.decrypt_box_2.textBox(self.page, "Decrypted message:", "Save", QSize(0, 250),  "#44475a")
+        # self.decrypt_box_1 = MyWidgets()
+        # self.decrypt_box_1.textBox(self.page, "Write something to decrypt:", "Done", QSize(500, 250))
+        # self.decrypt_box_2 = MyWidgets()
+        # self.decrypt_box_2.textBox(self.page, "Decrypted message:", "Save", QSize(0, 250),  "#44475a")
 
-        self.central_layout.addWidget(self.decrypt_box_1.text_box_frame, 0, Qt.AlignCenter)
-        self.central_layout.addWidget(self.decrypt_box_2.text_box_frame, 0, Qt.AlignLeft)
+        # self.central_layout.addWidget(self.decrypt_box_1.text_box_frame, 0, Qt.AlignCenter)
+        # self.central_layout.addWidget(self.decrypt_box_2.text_box_frame, 0, Qt.AlignLeft)
         
         self.main_layout.addWidget(self.central_frame)
 
         application_pages.addWidget(self.page)
 
-        self.decrypt_box_1.done_btn.clicked.connect(self.done_handle)
+        #self.decrypt_box_1.done_btn.clicked.connect(self.done_handle)
 
     def done_handle(self):
         pass
