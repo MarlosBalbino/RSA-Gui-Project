@@ -1,3 +1,4 @@
+from msilib.schema import Error
 import os
 from turtle import st
 from app.char_codec import CharCodec
@@ -26,12 +27,11 @@ class RSA:
         d = self.__inverse(e, (p - 1) * (q - 1))
 
         # RUN ENCRYPTED MESSAGE        
-        contentValues = self.content.split()
+        contentValues = content.split()
         for C in contentValues:
-            M = self.__QuickMod(int(C), d, p * q)
-
+            M = self.__QuickMod(int(C), d, p * q)            
             # convert int to bytes type and write in output file
-            outputContent += str(M)
+            outputContent += chr(M)
 
         return outputContent
 
@@ -78,7 +78,7 @@ class RSA:
 
     def __inverse(self, e, φ):
         """recebe e, φ; retorna inverso de e ≡ 1 mod(φ)"""
-        inverseLine = self.linearOperation(e, φ, [], 1)
+        inverseLine = self.__linearOperation(e, φ, [], 1)
         inverse = inverseLine[0][0]
 
         if inverse < 0:

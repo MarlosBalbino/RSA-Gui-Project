@@ -4,7 +4,7 @@ from qt_core import *
 
 
 class UI_ApplicationPage1(object):
-    def setupUi(self, application_pages):
+    def setupUi(self, application_pages, warning_label: QLabel):
         if not application_pages.objectName():
             application_pages.setObjectName(u"application_pages")
         

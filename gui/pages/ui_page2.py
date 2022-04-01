@@ -7,24 +7,44 @@ from app.rsa import RSA
 
 class UI_ApplicationPage2(object):
         
-    def setupUi(self, application_pages):
+    def setupUi(self, application_pages, warning_label: QLabel):
         if not application_pages.objectName():
-            application_pages.setObjectName(u"application_pages")        
+            application_pages.setObjectName(u"application_pages")
+
+        self.warning_label = warning_label       
 
          # PAGE 2 CONTENT
         self.page = QWidget()
         self.main_layout = QHBoxLayout(self.page)
 
         self.central_frame = QFrame()
-        self.central_frame.setMaximumHeight(250)
         self.central_frame.setMaximumWidth(500)
+        self.central_frame.setMaximumHeight(250)   
         
         self.central_layout = QHBoxLayout(self.central_frame)
         self.central_layout.setContentsMargins(0,0,0,0)
         self.central_layout.setSpacing(10)
 
-        self.encrypt_box_1 = TextBox(self.page, "Write something to encrypt:", "Done", QSize(500, 250))
-        self.encrypt_box_2 = TextBox(self.page, "Encrypted message:", "Save", QSize(0, 250), "#44475a")
+        self.encrypt_box_1 = TextBox(
+            parent=self.page, 
+            label_text="Write a message to",
+            label_tittle="encrypt:", 
+            tittle_color="#8fd694",
+            btn1_text="Done", 
+            btn2_text="Clear", 
+            size=QSize(500, 250)
+        )
+        
+        self.encrypt_box_2 = TextBox(
+            parent=self.page, 
+            label_text="Encrypted message:", 
+            btn1_text="Save",
+            btn2_text="Save As",
+            hide_btn2=False,
+            size=QSize(0, 250), 
+            text_box_color="#44475a",
+            read_only=True
+        )
 
         self.central_layout.addWidget(self.encrypt_box_1, 0, Qt.AlignCenter)
         self.central_layout.addWidget(self.encrypt_box_2, 0, Qt.AlignLeft)
@@ -47,18 +67,39 @@ class UI_ApplicationPage2(object):
 
         # CLICK EVENTS
         # Get text from text box
-        self.encrypt_box_1.done_btn.clicked.connect(self.done_handle)
-        
-    def done_handle(self):        
+        self.encrypt_box_1.btn_1.clicked.connect(self.done_handle)
+        self.encrypt_box_1.btn_2.clicked.connect(self.clear_handle)
+        self.encrypt_box_1.text_box.textChanged.connect(self.warning_clear)
+
+    def warning_clear(self):
+        self.warning_label.setText("")
+        self.get_text()
+        if self.text == "":
+            self.encrypt_box_1.btn_2.hide()
+        else:
+            self.encrypt_box_1.btn_2.show()
+
+    def done_handle(self):
         self.get_text()
         self.encrypt()
-        if self.encrypt_box_2.width() == 0:
-            self.text_box_animation.reset_and_start()
-            self.central_frame_animation.reset_and_start()
+        if self.text != "":
+            if self.encrypt_box_2.width() == 0:  
+                self.text_box_animation.reset()
+                self.central_frame_animation.reset()
+        else:
+            self.warning_label.setText("Warning: the field is empty!")
+
+    def clear_handle(self):
+        self.encrypt_box_1.text_box.clear()
+        self.encrypt_box_2.text_box.clear()        
+        self.encrypt_box_1.btn_2.hide()
+        if self.encrypt_box_2.width() != 0:
+            self.text_box_animation.reset()
+            self.central_frame_animation.reset()
 
     def get_text(self):
         self.text = self.encrypt_box_1.text_box.toPlainText()        
-        print(self.text)
+        print("#")
 
     def encrypt(self):
         encrypter = RSA()

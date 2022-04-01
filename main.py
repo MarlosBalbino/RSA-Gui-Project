@@ -26,17 +26,21 @@ class MainWindow(QMainWindow):
         self.ui = UI_MainWindow()  
         self.ui.setup_ui(self)
 
+        # LEFT HIDDEN MENU
+        self.mw = HiddenMenu(self.ui.main_frame)
+        self.mw.set_opacity_animation()
+
         # LEFT MENU ANIMATION
         self.left_menu_animation = ExpandAnimation(
             self.ui.left_menu,
             start_width = 50,
             end_width = 240,
             duration = 150
-        )
+        )        
         
         # CLICK EVENTS
         # Toggle button 
-        self.ui.toggle_btn.clicked.connect(self.left_menu_animation.reset_and_start)
+        self.ui.toggle_btn.clicked.connect(self.left_menu_animation.reset)
         # Show pages
         self.ui.btn_1.clicked.connect(self.show_page_1)
         self.ui.btn_2.clicked.connect(self.show_page_2)
@@ -45,15 +49,9 @@ class MainWindow(QMainWindow):
         self.ui.btn_4.clicked.connect(self.open_file)
         # Save file
         self.ui.btn_5.clicked.connect(self.save_file)
-        # Show settings
-        self.ui.settings_btn.clicked.connect(self.hidden_menu)
-
-        
-
-        # LEFT HIDDEN MENU
-        self.mw = HiddenMenu(self.ui.main_frame)
-        self.mw.set_opacity_animation()
-        self.mw.hidden_btn.clicked.connect(self.hidden_menu)
+        # Show/hide settings
+        self.ui.settings_btn.clicked.connect(self.mw.start)
+        self.mw.hidden_btn.clicked.connect(self.mw.start)
         
         # EXIBE A APLICAÇÂO
         self.show()
@@ -69,6 +67,7 @@ class MainWindow(QMainWindow):
         self.reset_selection()
         self.ui.pages.setCurrentWidget(self.ui.ui_page1.page)
         self.ui.top_left_label.setText("Generate keys manually or automatically.")
+        self.ui.warning_label.setText("")
         self.ui.top_right_label.setText("Keys")
         self.ui.btn_1.set_active(True)
 
@@ -76,6 +75,7 @@ class MainWindow(QMainWindow):
         self.reset_selection()
         self.ui.pages.setCurrentWidget(self.ui.ui_page2.page)
         self.ui.top_left_label.setText("Write a message to encrypt or drop a file.")
+        self.ui.warning_label.setText("")
         self.ui.top_right_label.setText("Encrypt")
         self.ui.btn_2.set_active(True)
 
@@ -83,40 +83,10 @@ class MainWindow(QMainWindow):
         self.reset_selection()
         self.ui.pages.setCurrentWidget(self.ui.ui_page3.page)
         self.ui.top_left_label.setText("Write a massage to decrypt or drop a file.")
+        self.ui.warning_label.setText("")
         self.ui.top_right_label.setText("Decrypt")
         self.ui.btn_3.set_active(True)
-
-    def hidden_menu(self):
-        # Get hidden menu width
-        menu_width = self.mw.hidden_menu.width()
         
-        self.animation = QPropertyAnimation(self.mw.hidden_menu, b"minimumWidth")
-        
-        width = 400
-        # Check width
-        if menu_width != width:
-            self.mw.show()
-            self.animation.setStartValue(menu_width)
-            self.animation.setEndValue(width)
-            self.animation.setDuration(150)
-        
-        else:
-            self.animation.setStartValue(menu_width)
-            self.animation.setEndValue(0)
-            self.animation.finished.connect(self.mw.hide)
-            self.animation.setDuration(250)
-        
-        self.animation.start()
-        self.mw.opacity_animation.reset_and_start()
-
-        
-
-        
-
-             
-        
-        
-       
     def dragEnterEvent(self, event: QDragEnterEvent) -> None:
         event.accept()
 

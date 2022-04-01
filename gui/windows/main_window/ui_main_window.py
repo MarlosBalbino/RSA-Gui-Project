@@ -12,7 +12,7 @@ from gui.widgets.py_push_button import PyPushButton
 # MAIN WINDOW
 class UI_MainWindow(object):
 
-    def setup_ui(self, parent):
+    def setup_ui(self, parent: QMainWindow):
         
         if not parent.objectName():
             parent.setObjectName("MainWindow")
@@ -38,7 +38,6 @@ class UI_MainWindow(object):
         self.extern_layout.setSpacing(0)
 
         # LEFT MENU
-        #////////////////////////////////////////////////////////////////////
         self.left_menu = QFrame()
         self.left_menu.setStyleSheet("background-color: #44475a")
         self.left_menu.setMinimumWidth(50)
@@ -147,9 +146,14 @@ class UI_MainWindow(object):
         self.top_bar.setStyleSheet("background-color: #21232d; color: #6272a4")
         self.top_bar_layout = QHBoxLayout(self.top_bar)
         self.top_bar_layout.setContentsMargins(5,0,5,0)
+        self.top_bar_layout.setSpacing(100)
 
-        # left label
+        # Left label
         self.top_left_label = QLabel("Generate keys manually or automatically.")
+
+        # Center label
+        self.warning_label = QLabel("")
+        self.warning_label.setStyleSheet("color: yellow")
 
         # spacer
         self.spacer = QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -160,6 +164,7 @@ class UI_MainWindow(object):
 
         # add labels to top bar layout
         self.top_bar_layout.addWidget(self.top_left_label)
+        self.top_bar_layout.addWidget(self.warning_label)
         self.top_bar_layout.addSpacerItem(self.spacer)
         self.top_bar_layout.addWidget(self.top_right_label)
 
@@ -169,11 +174,11 @@ class UI_MainWindow(object):
         self.pages.setWindowTitle("application_pages")
         self.pages.resize(622, 515)
         self.ui_page1 = UI_ApplicationPage1()
-        self.ui_page1.setupUi(self.pages)
+        self.ui_page1.setupUi(self.pages, self.warning_label)
         self.ui_page2 = UI_ApplicationPage2()
-        self.ui_page2.setupUi(self.pages)
+        self.ui_page2.setupUi(self.pages, self.warning_label)
         self.ui_page3 = UI_ApplicationPage3()
-        self.ui_page3.setupUi(self.pages)
+        self.ui_page3.setupUi(self.pages, self.warning_label)
         self.pages.setCurrentWidget(self.ui_page1.page)
 
         # BOTTOM BAR
