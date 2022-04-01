@@ -52,13 +52,7 @@ class MainWindow(QMainWindow):
 
         # LEFT HIDDEN MENU
         self.mw = HiddenMenu(self.ui.main_frame)
-
-        self.effect = QGraphicsOpacityEffect(self.mw.hidden_menu)
-        self.effect.setOpacity(1.00)
-
-        self.mw.hidden_menu.setGraphicsEffect(self.effect)
-        self.mw.hidden_menu.setAutoFillBackground(True)
-
+        self.mw.set_opacity_animation()
         self.mw.hidden_btn.clicked.connect(self.hidden_menu)
         
         # EXIBE A APLICAÇÂO
@@ -98,7 +92,6 @@ class MainWindow(QMainWindow):
         
         self.animation = QPropertyAnimation(self.mw.hidden_menu, b"minimumWidth")
         
-
         width = 400
         # Check width
         if menu_width != width:
@@ -114,20 +107,11 @@ class MainWindow(QMainWindow):
             self.animation.setDuration(250)
         
         self.animation.start()
+        self.mw.opacity_animation.reset_and_start()
 
-        self.anima = QPropertyAnimation(self.effect, b"opacity")
-        self.anima.setEasingCurve(QEasingCurve.InOutCubic)
-        self.anima.setDuration(250)
+        
 
-        effect_opacity = self.effect.opacity()
-
-        opacity = 0
-        if menu_width == width:            
-            self.anima.setStartValue(effect_opacity)
-            self.anima.setEndValue(opacity)
-            self.anima.start()
-        else:
-            self.effect.setOpacity(1.00)
+        
 
              
         

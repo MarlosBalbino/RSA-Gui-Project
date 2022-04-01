@@ -28,6 +28,14 @@ class HiddenMenu(QFrame):
         self.hidden_menu.setMinimumWidth(0)
         self.hidden_menu.setMaximumHeight(2160)
 
+        # OPACITY EFFECT
+        self.effect = QGraphicsOpacityEffect(self.hidden_menu)
+        self.effect.setOpacity(1.00)
+
+        # SET HIDDEN MENU EFFECT
+        self.hidden_menu.setGraphicsEffect(self.effect)
+        self.hidden_menu.setAutoFillBackground(True)
+
         # HIDDEN BTN FRAME
         self.hidden_btn_frame = QFrame()
         self.hidden_btn_frame.setStyleSheet("background-color: transparent")
@@ -41,6 +49,37 @@ class HiddenMenu(QFrame):
         # ADD HIDDEN BTN TO HIDDEN FRAME
         self.hidden_layout.addWidget(self.hidden_menu)
         self.hidden_layout.addWidget(self.hidden_btn_frame)
+
+    def set_opacity_animation(self):
+        self.opacity_animation = OpacityEffectAnimation(
+            self.effect, 
+            self.hidden_menu
+        )
+        
+
+class OpacityEffectAnimation(QPropertyAnimation):
+
+    def __init__(self, effect: QGraphicsOpacityEffect, frame: QFrame):
+        super().__init__(effect, b"opacity")
+
+        self.setEasingCurve(QEasingCurve.InOutCubic)
+        self.setDuration(250)
+
+        self.effect = effect
+        self.frame = frame
+
+    def reset_and_start(self):
+        # Current frame width
+        frame_width = self.frame.width()
+
+        # Check width
+        if frame_width == 400:
+            self.setStartValue(1.00)
+            self.setEndValue(0)
+            self.start()
+        else:
+            self.effect.setOpacity(1.00)
+
 
 class TextBox(QFrame):
     # TEXT BOX
@@ -184,7 +223,7 @@ class ExpandAnimation(QPropertyAnimation):
 
     def __init__(
         self, 
-        parent, 
+        parent: QFrame,
         start_width, 
         end_width, 
         duration=300
@@ -192,14 +231,14 @@ class ExpandAnimation(QPropertyAnimation):
 
         super().__init__(parent, b"minimumWidth")
 
-        self._parent = parent
+        self.frame = parent
         self.start_width = start_width
         self.end_width = end_width
         self._duration = duration
 
     def reset_and_start(self):
         # Current frame width
-        frame_width = self._parent.width()
+        frame_width = self.frame.width()
 
         # Check width
         width = self.start_width
