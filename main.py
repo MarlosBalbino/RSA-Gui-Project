@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         
         # UI BUTTONS
         # Toggle button 
-        self.ui.toggle_btn.clicked.connect(self.toggle_button)
+        self.ui.toggle_btn.clicked.connect(self.left_menu_animation.reset_and_start)
         # Show pages
         self.ui.btn_1.clicked.connect(self.show_page_1)
         self.ui.btn_2.clicked.connect(self.show_page_2)
@@ -91,23 +91,6 @@ class MainWindow(QMainWindow):
         self.ui.top_left_label.setText("Write a massage to decrypt or drop a file.")
         self.ui.top_right_label.setText("Decrypt")
         self.ui.btn_3.set_active(True)
-
-    def toggle_button(self):
-        # Get left menu width
-        menu_width = self.ui.left_menu.width()
-
-        # Check width
-        width = 50
-        if menu_width == 50:
-            width = 240
-
-        # Start animation
-        self.animation = QPropertyAnimation(self.ui.left_menu, b"minimumWidth")
-        self.animation.setStartValue(menu_width)
-        self.animation.setEndValue(width)
-        self.animation.setDuration(150)
-        self.animation.start()
-
 
     def hidden_menu(self):
         # Get hidden menu width

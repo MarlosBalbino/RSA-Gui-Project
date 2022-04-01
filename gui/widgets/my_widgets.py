@@ -199,7 +199,7 @@ class ExpandAnimation(QPropertyAnimation):
         self.end_width = end_width
         self._duration = duration
 
-    def reset(self):
+    def reset_and_start(self):
         # Current frame width
         frame_width = self._parent.width()
 
@@ -212,3 +212,4 @@ class ExpandAnimation(QPropertyAnimation):
         self.setStartValue(frame_width)
         self.setEndValue(width)
         self.setDuration(self._duration)
+        self.start()

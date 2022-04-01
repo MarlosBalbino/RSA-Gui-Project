@@ -53,10 +53,8 @@ class UI_ApplicationPage2(object):
         self.get_text()
         self.encrypt()
         if self.encrypt_box_2.width() == 0:
-            self.text_box_animation.reset()
-            self.text_box_animation.start()
-            self.central_frame_animation.reset()
-            self.central_frame_animation.start()
+            self.text_box_animation.reset_and_start()
+            self.central_frame_animation.reset_and_start()
 
     def get_text(self):
         self.text = self.encrypt_box_1.text_box.toPlainText()        
