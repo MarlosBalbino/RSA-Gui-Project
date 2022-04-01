@@ -1,5 +1,4 @@
 from ctypes import alignment
-from gui.widgets.my_widgets import MyWidgets
 from qt_core import *
 
 # IMPORT PAGES

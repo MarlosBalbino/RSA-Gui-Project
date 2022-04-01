@@ -3,105 +3,103 @@ from qt_core import *
 from gui.widgets.py_push_button import PyPushButton
 
 
-class MyWidgets(object):
+class HiddenMenu(QFrame):
+    # LEFT HIDDEN MENU
+    #////////////////////////////////////////////////////////////////////
+    def __init__(self, parent: QFrame) -> None:
+        super().__init__(parent)
+        # HIDDEN FRAME
+        
+        self.setStyleSheet("background-color: transparent")
+        self.setMaximumWidth(3840)
+        self.setMinimumWidth(3840)
+        self.setMinimumHeight(2160)
+        self.hide()
 
-    class HiddenMenu(QFrame):
-        # LEFT HIDDEN MENU
-        #////////////////////////////////////////////////////////////////////
-        def __init__(self, parent: QFrame) -> None:
-            super().__init__(parent)
-            # HIDDEN FRAME
-            
-            self.setStyleSheet("background-color: transparent")
-            self.setMaximumWidth(3840)
-            self.setMinimumWidth(3840)
-            self.setMinimumHeight(2160)
-            self.hide()
+        # HIDDEN FRAME LAYOUT
+        self.hidden_layout = QHBoxLayout(self)
+        self.hidden_layout.setContentsMargins(0,0,0,0)
+        self.hidden_layout.setSpacing(0)
 
-            # HIDDEN FRAME LAYOUT
-            self.hidden_layout = QHBoxLayout(self)
-            self.hidden_layout.setContentsMargins(0,0,0,0)
-            self.hidden_layout.setSpacing(0)
+        # HIDDEN MENU
+        self.hidden_menu = QFrame()
+        self.hidden_menu.setStyleSheet("background-color: #44475a")
+        self.hidden_menu.setMaximumWidth(0)
+        self.hidden_menu.setMinimumWidth(0)
+        self.hidden_menu.setMaximumHeight(2160)
 
-            # HIDDEN MENU
-            self.hidden_menu = QFrame()
-            self.hidden_menu.setStyleSheet("background-color: #44475a")
-            self.hidden_menu.setMaximumWidth(0)
-            self.hidden_menu.setMinimumWidth(0)
-            self.hidden_menu.setMaximumHeight(2160)
+        # HIDDEN BTN FRAME
+        self.hidden_btn_frame = QFrame()
+        self.hidden_btn_frame.setStyleSheet("background-color: transparent")
+        self.hidden_btn_frame.setMaximumHeight(2160)
 
-            # HIDDEN BTN FRAME
-            self.hidden_btn_frame = QFrame()
-            self.hidden_btn_frame.setStyleSheet("background-color: transparent")
-            self.hidden_btn_frame.setMaximumHeight(2160)
+        # HIDDEN BTN
+        self.hidden_btn = QPushButton(self.hidden_btn_frame)
+        self.hidden_btn.setStyleSheet("background-color: transparent")
+        self.hidden_btn.setFixedSize(3840, 3840)
+        
+        # ADD HIDDEN BTN TO HIDDEN FRAME
+        self.hidden_layout.addWidget(self.hidden_menu)
+        self.hidden_layout.addWidget(self.hidden_btn_frame)
 
-            # HIDDEN BTN
-            self.hidden_btn = QPushButton(self.hidden_btn_frame)
-            self.hidden_btn.setStyleSheet("background-color: transparent")
-            self.hidden_btn.setFixedSize(3840, 3840)
-            
-            # ADD HIDDEN BTN TO HIDDEN FRAME
-            self.hidden_layout.addWidget(self.hidden_menu)
-            self.hidden_layout.addWidget(self.hidden_btn_frame)
+class TextBox(QFrame):
+    # TEXT BOX
+    #////////////////////////////////////////////////////////////////////
+    def __init__(
+        self, 
+        parent=None, 
+        label_text="", 
+        btn_text="", 
+        size=QSize(500, 250),
+        text_box_color="#282a36"
+    ):
+        super().__init__(parent)
 
-    class TextBox(QFrame):
+        # TEXT BOX FRAME            
+        self.setStyleSheet("background-color: #44475a; border-radius: 5")
+        self.setMaximumSize(size)
+        self.setMinimumSize(size)
+
+        # LABEL TEXT
+        self.text_label = QLabel(self)
+        self.text_label.setText(label_text)
+        self.text_label.setStyleSheet("font: 700 12pt Segoe UI; color: rgb(255, 255, 255)")
+
+        # CUSTOM VERTICAL SCROLL BAR
+        self.vertical_scroll_bar = MyScrollBar()
+
         # TEXT BOX
-        #////////////////////////////////////////////////////////////////////
-        def __init__(
-            self, 
-            parent=None, 
-            label_text="", 
-            btn_text="", 
-            size=QSize(500, 250),
-            text_box_color="#282a36"
-        ):
-            super().__init__(parent)
+        self.text_box = QTextEdit(self)
+        self.text_box.setMaximumSize(QSize(482, 178))
+        self.text_box.setMinimumSize(QSize(482, 178))
+        self.text_box.setStyleSheet(f"""color: white; font-size: 12pt; 
+            border-radius: 5; background-color: {text_box_color}""")
+        self.text_box.setVerticalScrollBar(self.vertical_scroll_bar)
+        self.text_box.setAcceptRichText(True)
 
-            # TEXT BOX FRAME            
-            self.setStyleSheet("background-color: #44475a; border-radius: 5")
-            self.setMaximumSize(size)
-            self.setMinimumSize(size)
+        # DONE BUTTON
+        self.done_btn = QPushButton(btn_text)
+        self.done_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #8489a6;
+                border-radius: 10px;
+                font-size: 12pt;
+            }
+            QPushButton:hover {
+                background-color: #c3ccdf;
+            }    
+            QPushButton:pressed {
+                background-color: #44475a;
+            }        
+        """)
+        self.done_btn.setMaximumWidth(72)
+        self.done_btn.setMaximumHeight(20)
 
-            # LABEL TEXT
-            self.text_label = QLabel(self)
-            self.text_label.setText(label_text)
-            self.text_label.setStyleSheet("font: 700 12pt Segoe UI; color: rgb(255, 255, 255)")
-
-            # CUSTOM VERTICAL SCROLL BAR
-            self.vertical_scroll_bar = MyScrollBar()
-
-            # TEXT BOX
-            self.text_box = QTextEdit(self)
-            self.text_box.setMaximumSize(QSize(482, 178))
-            self.text_box.setMinimumSize(QSize(482, 178))
-            self.text_box.setStyleSheet(f"""color: white; font-size: 12pt; 
-                border-radius: 5; background-color: {text_box_color}""")
-            self.text_box.setVerticalScrollBar(self.vertical_scroll_bar)
-            self.text_box.setAcceptRichText(True)
-
-            # DONE BUTTON
-            self.done_btn = QPushButton(btn_text)
-            self.done_btn.setStyleSheet("""
-                QPushButton {
-                    background-color: #8489a6;
-                    border-radius: 10px;
-                    font-size: 12pt;
-                }
-                QPushButton:hover {
-                    background-color: #c3ccdf;
-                }    
-                QPushButton:pressed {
-                    background-color: #44475a;
-                }        
-            """)
-            self.done_btn.setMaximumWidth(72)
-            self.done_btn.setMaximumHeight(20)
-
-            # TEXT BOX LAYOUT
-            self.text_box_layout = QVBoxLayout(self)
-            self.text_box_layout.addWidget(self.text_label)
-            self.text_box_layout.addWidget(self.text_box)
-            self.text_box_layout.addWidget(self.done_btn)
+        # TEXT BOX LAYOUT
+        self.text_box_layout = QVBoxLayout(self)
+        self.text_box_layout.addWidget(self.text_label)
+        self.text_box_layout.addWidget(self.text_box)
+        self.text_box_layout.addWidget(self.done_btn)
 
 
 class MyScrollBar(QScrollBar):

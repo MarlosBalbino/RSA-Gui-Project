@@ -1,6 +1,6 @@
 from ctypes import alignment
 from qt_core import *
-from gui.widgets.my_widgets import MyWidgets
+
 
 
 class UI_ApplicationPage1(object):

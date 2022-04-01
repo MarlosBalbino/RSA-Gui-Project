@@ -9,7 +9,7 @@ from pkg_resources import to_filename
 from qt_core import *
 from app.char_codec import CharCodec
 from app.rsa import RSA
-from gui.widgets.my_widgets import ExpandAnimation
+from gui.widgets.my_widgets import ExpandAnimation, HiddenMenu
 
 # IMPORT MAIN WINDOW
 from gui.windows.main_window.ui_main_window import *
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
             duration = 150
         )
         
-        # UI BUTTONS
+        # CLICK EVENTS
         # Toggle button 
         self.ui.toggle_btn.clicked.connect(self.left_menu_animation.reset_and_start)
         # Show pages
@@ -51,7 +51,7 @@ class MainWindow(QMainWindow):
         
 
         # LEFT HIDDEN MENU
-        self.mw = MyWidgets.HiddenMenu(self.ui.main_frame)
+        self.mw = HiddenMenu(self.ui.main_frame)
 
         self.effect = QGraphicsOpacityEffect(self.mw.hidden_menu)
         self.effect.setOpacity(1.00)
