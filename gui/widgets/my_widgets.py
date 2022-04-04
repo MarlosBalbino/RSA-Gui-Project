@@ -1,4 +1,5 @@
 from ctypes import alignment
+from typing import Type
 
 from qt_core import *
 from gui.widgets.py_push_button import PyPushButton
@@ -111,7 +112,74 @@ class OpacityEffectAnimation(QPropertyAnimation):
             self.effect.setOpacity(1.00)
 
 
-class TextBox(QFrame):
+class TextBox(QTextEdit):
+
+    def __init__(
+        self,
+        parent=None,
+        text_box_color="#282a36",
+        read_only=False,
+        hide=False
+        ):
+        
+        super().__init__(parent)
+
+        self.setStyleSheet(f"""
+            QTextEdit {{ 
+                color: white; font-size: 12pt; 
+                border-radius: 5; background-color: {text_box_color};
+            }}
+        """
+        )      
+        self.setReadOnly(read_only)
+        # CUSTOM VERTICAL SCROLL BAR
+        self.vertical_scroll_bar = MyScrollBar()
+        self.setVerticalScrollBar(self.vertical_scroll_bar)
+        self.setAcceptRichText(True)
+        if hide is True:
+            self.hide()
+
+
+class MyPushButton(QPushButton):
+
+    def __init__(
+        self,
+        text = "",
+        color = "#8489a6",
+        border_radius = 10,
+        font_size = 12,
+        hover = "#c3ccdf",
+        pressed = "#44475a",
+        maximum_width = 72,
+        maximum_heigth = 20,
+        hide=False
+    ):
+
+        super().__init__()
+
+        self.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {color};
+                border-radius: {border_radius}px;
+                font-size: {font_size}pt;
+            }}
+            QPushButton:hover {{
+                background-color: {hover};
+            }}
+            QPushButton:pressed {{
+                background-color: {pressed};
+            }}    
+        """
+        )
+        self.setText(text)
+        
+        self.setMaximumWidth(maximum_width)
+        self.setMaximumHeight(maximum_heigth)
+        if hide is True:
+            self.hide()
+
+
+class TextBoxWindow(QFrame):
     # TEXT BOX
     #////////////////////////////////////////////////////////////////////
     def __init__(
@@ -121,18 +189,23 @@ class TextBox(QFrame):
         label_tittle="",
         tittle_color="rgb(255, 255, 255)",
         btn1_text="",
+        btn1_width=72,
+        hide_btn1=False,
         btn2_text="",
+        btn2_width=72,
         hide_btn2=True,
-        size=QSize(500, 250),
+        window_resize=QSize(500, 250),
         text_box_color="#282a36",
-        read_only=False
+        hide_text_box=False,
+        read_only=False,
     ):
         super().__init__(parent)
 
         # TEXT BOX FRAME            
         self.setStyleSheet("background-color: #44475a; border-radius: 5")
-        self.setMaximumSize(size)
-        self.setMinimumSize(size)
+        if window_resize:
+            self.setMaximumSize(window_resize)
+            self.setMinimumSize(window_resize)
 
         # TOP FRAME
         self.top_frame = QFrame()
@@ -160,23 +233,24 @@ class TextBox(QFrame):
         self.top_frame_layout.addWidget(self.label_tittle)
         self.top_frame_layout.addSpacerItem(self.spacer)
 
-        # CUSTOM VERTICAL SCROLL BAR
-        self.vertical_scroll_bar = MyScrollBar()
+        # CENTRAL FRAME
+        self.central_frame = QFrame()
+        self.central_frame.setStyleSheet("background-color: transparent")
 
-        # TEXT BOX
-        self.text_box = QTextEdit(self)
-        self.text_box.setMaximumSize(QSize(482, 178)) #178
-        self.text_box.setMinimumSize(QSize(482, 178))
-        self.text_box.setStyleSheet(f"""
-            QTextEdit {{ 
-                color: white; font-size: 12pt; 
-                border-radius: 5; background-color: {text_box_color};
-            }}
-        """
-        )      
-        self.text_box.setReadOnly(read_only)
-        self.text_box.setVerticalScrollBar(self.vertical_scroll_bar)
-        self.text_box.setAcceptRichText(True)
+        self.central_layout = QHBoxLayout(self.central_frame)
+        self.central_layout.setContentsMargins(0,0,0,0)
+        self.central_layout.setSpacing(9)
+
+        # TEXT BOX   
+        self.text_box = TextBox(
+            self,
+            text_box_color,
+            read_only,
+            hide_text_box
+        )
+
+        # ADD TEXT BOXES TO CENTRAL LAYOUT
+        self.central_layout.addWidget(self.text_box)
 
         # BTNS FRAME
         self.bottom_frame = QFrame()
@@ -187,23 +261,35 @@ class TextBox(QFrame):
         self.bottom_layout.setContentsMargins(0,0,0,0)
 
         # DONE BUTTON
-        self.btn_1 = MyPushButton(btn1_text)
+        self.btn_1 = MyPushButton(btn1_text, maximum_width=btn1_width, hide=hide_btn1)
         # CLEAR BUTTON
-        self.btn_2 = MyPushButton(btn2_text)
-        if hide_btn2:
-            self.btn_2.hide()
+        self.btn_2 = MyPushButton(btn2_text, maximum_width=btn2_width, hide=hide_btn2)
+
+        # SPACER FRAME
+        self.spacer_frame = QFrame()
+        
+        # SPACER LAYOUT
+        self.spacer_layout = QHBoxLayout(self.spacer_frame)
+        self.spacer_layout.addSpacerItem(self.spacer)
 
         # ADD BTNS TO LAYOUT
         self.bottom_layout.addWidget(self.btn_1, 10)
         self.bottom_layout.addWidget(self.btn_2, 10)
-        self.bottom_layout.addSpacerItem(self.spacer)
+        self.bottom_layout.addWidget(self.spacer_frame)
 
         # TEXT BOX LAYOUT
         self.text_box_layout = QVBoxLayout(self)
         self.text_box_layout.setContentsMargins(9,7,9,7) 
         self.text_box_layout.addWidget(self.top_frame)
-        self.text_box_layout.addWidget(self.text_box)
+        self.text_box_layout.addWidget(self.central_frame)
         self.text_box_layout.addWidget(self.bottom_frame)
+
+    def add_text_box(self, text_box: Type[TextBox]) -> None:
+        self.central_layout.addWidget(text_box)
+
+    def add_button(self, button: Type[MyPushButton]) -> None:
+        self.bottom_layout.addWidget(button)
+
 
 
 class MyScrollBar(QScrollBar):
@@ -282,40 +368,6 @@ class MyScrollBar(QScrollBar):
                 background: none;
             }
         """)
-        
-class MyPushButton(QPushButton):
-
-    def __init__(
-        self,
-        text = "",
-        color = "#8489a6",
-        border_radius = 10,
-        font_size = 12,
-        hover = "#c3ccdf",
-        pressed = "#44475a",
-        maximum_width = 72,
-        maximum_heigth = 20
-    ):
-
-        super().__init__()
-
-        self.setStyleSheet(f"""
-            QPushButton {{
-                background-color: {color};
-                border-radius: {border_radius}px;
-                font-size: {font_size}pt;
-            }}
-            QPushButton:hover {{
-                background-color: {hover};
-            }}
-            QPushButton:pressed {{
-                background-color: {pressed};
-            }}    
-        """
-        )
-        self.setText(text)
-        self.setMaximumWidth(maximum_width)
-        self.setMaximumHeight(maximum_heigth)
 
 
 class ExpandAnimation(QPropertyAnimation):

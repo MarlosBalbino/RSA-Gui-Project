@@ -1,6 +1,6 @@
 from ctypes import alignment
 from qt_core import *
-from gui.widgets.my_widgets import TextBox, ExpandAnimation
+from gui.widgets.my_widgets import TextBoxWindow, ExpandAnimation
 
 from app.rsa import RSA
 
@@ -25,23 +25,22 @@ class UI_ApplicationPage2(object):
         self.central_layout.setContentsMargins(0,0,0,0)
         self.central_layout.setSpacing(10)
 
-        self.encrypt_box_1 = TextBox(
+        self.encrypt_box_1 = TextBoxWindow(
             parent=self.page, 
             label_text="Write a message to",
             label_tittle="encrypt:", 
             tittle_color="#8fd694",
             btn1_text="Done", 
-            btn2_text="Clear", 
-            size=QSize(500, 250)
+            btn2_text="Clear",
         )
         
-        self.encrypt_box_2 = TextBox(
+        self.encrypt_box_2 = TextBoxWindow(
             parent=self.page, 
             label_text="Encrypted message:", 
             btn1_text="Save",
             btn2_text="Save As",
             hide_btn2=False,
-            size=QSize(0, 250), 
+            window_resize=QSize(0, 250),
             text_box_color="#44475a",
             read_only=True
         )

@@ -1,6 +1,6 @@
 from ctypes import alignment
 from qt_core import *
-from gui.widgets.my_widgets import TextBox, ExpandAnimation, FieldEmptyError
+from gui.widgets.my_widgets import TextBoxWindow, ExpandAnimation, FieldEmptyError
 from app.rsa import RSA
 
 
@@ -26,22 +26,21 @@ class UI_ApplicationPage3(object):
         self.central_layout.setContentsMargins(0,0,0,0)
         self.central_layout.setSpacing(10)
 
-        self.decrypt_box_1 = TextBox(
+        self.decrypt_box_1 = TextBoxWindow(
             self.page, 
             "Write a message to", 
             "decrypt:",
             tittle_color="#be2444",
             btn1_text="Done", 
             btn2_text="Clear", 
-            size=QSize(500, 250)
         )
-        self.decrypt_box_2 = TextBox(
+        self.decrypt_box_2 = TextBoxWindow(
             self.page, 
             "Decrypted message:", 
             btn1_text="Save",
             btn2_text="Save As",
             hide_btn2=False,
-            size=QSize(0, 250), 
+            window_resize=QSize(0, 250), 
             text_box_color="#44475a",
             read_only=True
         )
