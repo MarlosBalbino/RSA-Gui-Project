@@ -5,7 +5,6 @@ import time
 import threading
 from turtle import width
 
-from pkg_resources import to_filename
 from qt_core import *
 from app.char_codec import CharCodec
 from app.rsa import RSA
@@ -20,7 +19,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("RSA Cryptography")
+        self.setWindowIcon(QIcon("gui/images/icons/RSA.ico"))
         self.setAcceptDrops(True)
+        #self.setMouseTracking(True)
 
         # SETUP MAIN WINDOW
         self.ui = UI_MainWindow()  
@@ -41,6 +42,7 @@ class MainWindow(QMainWindow):
         # CLICK EVENTS
         # Toggle button 
         self.ui.toggle_btn.clicked.connect(self.left_menu_animation.reset)
+        
         # Show pages
         self.ui.btn_1.clicked.connect(self.show_page_1)
         self.ui.btn_2.clicked.connect(self.show_page_2)
@@ -55,6 +57,9 @@ class MainWindow(QMainWindow):
         
         # EXIBE A APLICAÇÂO
         self.show()
+
+    # def mouseMoveEvent(self, event: QMouseEvent) -> None:
+    #     print("sldkgjsdlg")
 
     def reset_selection(self):
         for btn in self.ui.left_menu.findChildren(QPushButton):

@@ -370,6 +370,27 @@ class MyScrollBar(QScrollBar):
         """)
 
 
+class MyJumperSlider(QSlider):
+
+    def __init__(self, orientation: Qt.Orientation):
+        super().__init__(orientation)
+
+        self.setStyleSheet("color: blue")
+        
+    def set_steps(self, steps: int):
+        self.multiples = [int(i*(self.maximum()/steps)) for i in range(0, steps + 1)]
+        print(self.multiples)
+            
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        pos_x = int(event.pos().x() / (self.width()/self.maximum()))
+        
+        try:
+            if pos_x in self.multiples:
+                self.setValue(pos_x)
+        except:
+            pass
+
+
 class ExpandAnimation(QPropertyAnimation):
 
     def __init__(

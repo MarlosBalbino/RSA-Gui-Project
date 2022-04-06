@@ -1,16 +1,20 @@
 from ctypes import alignment
-from gui.widgets.my_widgets import TextBoxWindow, TextBox, MyPushButton
+from turtle import pos
+from gui.widgets.my_widgets import TextBoxWindow, TextBox, MyPushButton, MyJumperSlider
 from qt_core import *
 
 
-
 class UI_ApplicationPage1(object):
+
+
     def setupUi(self, application_pages, warning_label: QLabel):
         if not application_pages.objectName():
             application_pages.setObjectName(u"application_pages")
+        
 
         # PAGE 1 CONTENT
         self.page = QWidget()
+        
         self.verticalLayout = QVBoxLayout(self.page)
 
         self.central_frame = QFrame()
@@ -24,14 +28,15 @@ class UI_ApplicationPage1(object):
             btn1_text="Generate keys",
             btn1_width=120,
             btn2_text="clear",
-            window_resize=False
+            window_resize=None
         )
-        self.line_edit_1.setMaximumHeight(120)
 
         self.text_box_2 = TextBox()
         self.text_box_3 = TextBox()
+
         self.line_edit_1.add_text_box(self.text_box_2)
         self.line_edit_1.add_text_box(self.text_box_3)
+        self.line_edit_1.setMaximumHeight(120)
 
         self.line_edit_2 = TextBoxWindow(
             label_text="Public keys:",
@@ -43,19 +48,32 @@ class UI_ApplicationPage1(object):
             text_box_color="#44475a",
             read_only=True
         )
-        self.line_edit_2.setMaximumHeight(120)
-    
+        
         self.text_box_4 = TextBox(text_box_color="#44475a", read_only=True)
-        self.line_edit_2.add_text_box(self.text_box_4)
 
-        self.spacer = QSpacerItem(0, 0, QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)    
+        self.line_edit_2.add_text_box(self.text_box_4)
+        self.line_edit_2.setMaximumHeight(120)
+
+        self.slider = MyJumperSlider(Qt.Orientation.Horizontal)
+        self.slider.setMaximumWidth(300)
+        self.slider.setMinimum(0)
+        self.slider.setMaximum(100)
+        self.slider.setSingleStep(34)
+        self.slider.set_steps(3)
+
+        self.spacer = QSpacerItem(0, 0, QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
 
         self.central_layout.addSpacerItem(self.spacer)
         self.central_layout.addWidget(self.line_edit_1)
         self.central_layout.addWidget(self.line_edit_2)
+        self.central_layout.addWidget(self.slider)
         self.central_layout.addSpacerItem(self.spacer)
 
         self.verticalLayout.addWidget(self.central_frame)
+        
+        application_pages.addWidget(self.page)   
+
+
+    
 
         
-        application_pages.addWidget(self.page)
