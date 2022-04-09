@@ -243,17 +243,6 @@ class TextBoxWindow(QFrame):
         self.central_layout.setContentsMargins(0,0,0,0)
         self.central_layout.setSpacing(9)
 
-        # TEXT BOX   
-        self.text_box = TextBox(
-            self,
-            text_box_color,
-            read_only,
-            hide_text_box
-        )
-
-        # ADD TEXT BOXES TO CENTRAL LAYOUT
-        self.central_layout.addWidget(self.text_box)
-
         # BTNS FRAME
         self.bottom_frame = QFrame()
         # self.bottom_frame.setStyleSheet("background-color: blue")

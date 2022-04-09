@@ -1,6 +1,6 @@
 from ctypes import alignment
 from qt_core import *
-from gui.widgets.my_widgets import TextBoxWindow, ExpandAnimation, FieldEmptyError
+from gui.widgets.my_widgets import TextBoxWindow, ExpandAnimation, FieldEmptyError, TextBox
 from app.rsa import RSA
 
 
@@ -34,6 +34,10 @@ class UI_ApplicationPage3(object):
             btn1_text="Done", 
             btn2_text="Clear", 
         )
+
+        self.text_box_1 = TextBox()
+        self.decrypt_box_1.add_text_box(self.text_box_1)
+
         self.decrypt_box_2 = TextBoxWindow(
             self.page, 
             "Decrypted message:", 
@@ -44,6 +48,9 @@ class UI_ApplicationPage3(object):
             text_box_color="#44475a",
             read_only=True
         )
+
+        self.text_box_2 = TextBox()
+        self.decrypt_box_2.add_text_box(self.text_box_2)
 
         self.central_layout.addWidget(self.decrypt_box_1, 0, Qt.AlignCenter)
         self.central_layout.addWidget(self.decrypt_box_2, 0, Qt.AlignLeft)
@@ -68,7 +75,7 @@ class UI_ApplicationPage3(object):
         # Get text from text box
         self.decrypt_box_1.btn_1.clicked.connect(self.done_handle)
         self.decrypt_box_1.btn_2.clicked.connect(self.clear_handle)
-        self.decrypt_box_1.text_box.textChanged.connect(self.warning_clear)
+        self.text_box_1.textChanged.connect(self.warning_clear)
 
     def warning_clear(self):
         self.warning_label.setText("")
@@ -96,19 +103,19 @@ class UI_ApplicationPage3(object):
             self.warning_label.setText("Warning: insert a valid encrypted message!")
 
     def clear_handle(self):
-        self.decrypt_box_1.text_box.clear()
-        self.decrypt_box_2.text_box.clear()
+        self.text_box_1.clear()
+        self.text_box_2.clear()
         self.decrypt_box_1.btn_2.hide()
         if self.decrypt_box_2.width() != 0:
             self.text_box_animation.reset()
             self.central_frame_animation.reset()
 
     def get_text(self):
-        self.text = self.decrypt_box_1.text_box.toPlainText()        
+        self.text = self.text_box_1.toPlainText()        
         print("#")
 
     def decrypt(self):
         decrypter = RSA()
         self.decrypted_str = decrypter.decrypt(17, 23, 3, self.text)
-        self.decrypt_box_2.text_box.clear()
-        self.decrypt_box_2.text_box.insertPlainText(self.decrypted_str)
+        self.text_box_2.clear()
+        self.text_box_2.insertPlainText(self.decrypted_str)

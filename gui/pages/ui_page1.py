@@ -26,22 +26,27 @@ class UI_ApplicationPage1(object):
         self.central_layout.setContentsMargins(72, 0, 72, 0)
         self.central_layout.setSpacing(72)
 
-        self.line_edit_1 = TextBoxWindow(
+        #PRIVATE KEYS WINDOW
+        # ////////////////////////////////////////////////////////////////////////
+        self.private_keys_window = TextBoxWindow(
             label_text="Private keys:",
             btn1_text="Generate keys",
             btn1_width=120,
             btn2_text="clear",
             window_resize=None
         )
-
+        self.text_box_1 = TextBox(scroll_mim_height=15)
         self.text_box_2 = TextBox(scroll_mim_height=15)
         self.text_box_3 = TextBox(scroll_mim_height=15)
 
-        self.line_edit_1.add_text_box(self.text_box_2)
-        self.line_edit_1.add_text_box(self.text_box_3)
-        self.line_edit_1.setMaximumHeight(150)
+        self.private_keys_window.add_text_box(self.text_box_1)
+        self.private_keys_window.add_text_box(self.text_box_2)
+        self.private_keys_window.add_text_box(self.text_box_3)
+        self.private_keys_window.setMaximumHeight(150)
 
-        self.line_edit_2 = TextBoxWindow(
+        #PUBLIC KEYS WINDOW
+        # ////////////////////////////////////////////////////////////////////////
+        self.public_keys_window = TextBoxWindow(
             label_text="Public keys:",
             btn1_text="Save",
             hide_btn1=True,
@@ -51,15 +56,18 @@ class UI_ApplicationPage1(object):
             text_box_color="#44475a",
             read_only=True
         )
-        
         self.text_box_4 = TextBox(text_box_color="#44475a", read_only=True, scroll_mim_height=15)
+        self.text_box_5 = TextBox(text_box_color="#44475a", read_only=True, scroll_mim_height=15)
 
-        self.line_edit_2.add_text_box(self.text_box_4)
-        self.line_edit_2.setMaximumHeight(150)
+        self.public_keys_window.add_text_box(self.text_box_4)
+        self.public_keys_window.add_text_box(self.text_box_5)
+        self.public_keys_window.setMaximumHeight(150)
 
+        # SPACERS
         self.vertical_spacer = QSpacerItem(0, 0, QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.horizontal_spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Preferred)
 
+        # JUMPING SLIDER
         self.slider_frame = QFrame()        
         self.slider_layout = QVBoxLayout(self.slider_frame)
         self.label_layout = QHBoxLayout()
@@ -91,8 +99,8 @@ class UI_ApplicationPage1(object):
         self.slider_layout.addSpacerItem(self.vertical_spacer) 
 
         self.central_layout.addSpacerItem(self.vertical_spacer)
-        self.central_layout.addWidget(self.line_edit_1)
-        self.central_layout.addWidget(self.line_edit_2)
+        self.central_layout.addWidget(self.private_keys_window)
+        self.central_layout.addWidget(self.public_keys_window)
         self.central_layout.addWidget(self.slider_frame)
         self.central_layout.addSpacerItem(self.vertical_spacer)
 
@@ -101,7 +109,9 @@ class UI_ApplicationPage1(object):
         application_pages.addWidget(self.page)
 
         # CLICK EVENTS
-        self.line_edit_1.btn_1.clicked.connect(self.generate_keys)
+        self.private_keys_window.btn_1.clicked.connect(self.generate_keys)
+
+        # DEFAULT SECURITY LEVEL
         self.level = 3
 
     def set_security_level(self):
@@ -130,13 +140,13 @@ class UI_ApplicationPage1(object):
             self.generate_keys()
 
         # PRIVATE KEYS
-        self.line_edit_1.text_box.setPlainText(rsa.get_key_P())
+        self.text_box_1.setPlainText(rsa.get_key_P())
         self.text_box_2.setPlainText(rsa.get_key_Q())
         self.text_box_3.setPlainText(rsa.get_key_D())
 
         # PUBLIC KEYS
-        self.line_edit_2.text_box.setPlainText(rsa.get_key_N())
-        self.text_box_4.setPlainText(rsa.get_key_E())
+        self.text_box_4.setPlainText(rsa.get_key_N())
+        self.text_box_5.setPlainText(rsa.get_key_E())
         
         
 

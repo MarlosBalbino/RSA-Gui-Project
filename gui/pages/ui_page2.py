@@ -1,6 +1,6 @@
 from ctypes import alignment
 from qt_core import *
-from gui.widgets.my_widgets import TextBoxWindow, ExpandAnimation
+from gui.widgets.my_widgets import TextBoxWindow, ExpandAnimation, TextBox
 
 from app.rsa import RSA
 
@@ -33,6 +33,9 @@ class UI_ApplicationPage2(object):
             btn1_text="Done", 
             btn2_text="Clear",
         )
+
+        self.text_box_1 = TextBox()
+        self.encrypt_box_1.add_text_box(self.text_box_1)
         
         self.encrypt_box_2 = TextBoxWindow(
             parent=self.page, 
@@ -44,6 +47,9 @@ class UI_ApplicationPage2(object):
             text_box_color="#44475a",
             read_only=True
         )
+
+        self.text_box_2 = TextBox()
+        self.encrypt_box_2.add_text_box(self.text_box_2)  
 
         self.central_layout.addWidget(self.encrypt_box_1, 0, Qt.AlignCenter)
         self.central_layout.addWidget(self.encrypt_box_2, 0, Qt.AlignLeft)
@@ -68,7 +74,7 @@ class UI_ApplicationPage2(object):
         # Get text from text box
         self.encrypt_box_1.btn_1.clicked.connect(self.done_handle)
         self.encrypt_box_1.btn_2.clicked.connect(self.clear_handle)
-        self.encrypt_box_1.text_box.textChanged.connect(self.warning_clear)
+        self.text_box_1.textChanged.connect(self.warning_clear)
 
     def warning_clear(self):
         self.warning_label.setText("")
@@ -89,19 +95,19 @@ class UI_ApplicationPage2(object):
             self.warning_label.setText("Warning: the field is empty!")
 
     def clear_handle(self):
-        self.encrypt_box_1.text_box.clear()
-        self.encrypt_box_2.text_box.clear()        
+        self.text_box_1.clear()
+        self.text_box_2.clear()        
         self.encrypt_box_1.btn_2.hide()
         if self.encrypt_box_2.width() != 0:
             self.text_box_animation.reset()
             self.central_frame_animation.reset()
 
     def get_text(self):
-        self.text = self.encrypt_box_1.text_box.toPlainText()        
+        self.text = self.text_box_1.toPlainText()        
         print("#")
 
     def encrypt(self):
         encrypter = RSA()
         self.encrypted_str = encrypter.encrypt(391, 3, self.text)
-        self.encrypt_box_2.text_box.clear()
-        self.encrypt_box_2.text_box.insertPlainText(self.encrypted_str)
+        self.text_box_2.clear()
+        self.text_box_2.insertPlainText(self.encrypted_str)
