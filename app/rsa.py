@@ -1,7 +1,7 @@
 from msilib.schema import Error
 import os
 from turtle import st
-from app.char_codec import CharCodec
+from app.random_value import RandomValue
 
 
 class RSA:
@@ -39,6 +39,44 @@ class RSA:
         d = self.__inverse(e, (p - 1) * (q - 1))
         M = self.__QuickMod(int(C), d, p * q)
         return str(M)
+
+    def generateKeys(self, security_level):      
+
+        # dic = {0: [3 , 5],
+        #        1: [5 , 7],
+        #        2: [7 , 11],
+        #        3: [11, 13]
+        # }
+        # start = 11 ** dic[security_level][0]
+        # end = 11 ** dic[security_level][1]
+
+        random = RandomValue()
+        self.key_P = random.getPrime(security_level)
+        self.key_Q = random.getPrime(security_level)
+        self.key_E = random.exp(self.key_P, self.key_Q)
+        self.key_D = self.__inverse(self.key_E, (self.key_P - 1) * (self.key_Q - 1))
+
+        # print("P: ", self.key_P)
+        # print("Q: ", self.key_Q)
+        # print("N: ", self.get_key_N())
+        # print("E: ", self.key_E)
+        # print("D: ", self.key_D)
+        
+
+    def get_key_P(self) -> str:
+        return str(self.key_P)
+    
+    def get_key_Q(self) -> str:
+        return str(self.key_Q)
+
+    def get_key_N(self) -> str:
+        return str(self.key_P * self.key_Q)
+    
+    def get_key_E(self) -> str:
+        return str(self.key_E)
+    
+    def get_key_D(self) -> str:
+        return str(self.key_D)
 
     @staticmethod
     def __QuickMod(base, exp, n):

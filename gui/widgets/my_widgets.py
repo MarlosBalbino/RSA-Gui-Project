@@ -1,4 +1,5 @@
 from ctypes import alignment
+from turtle import pos
 from typing import Type
 
 from qt_core import *
@@ -119,7 +120,8 @@ class TextBox(QTextEdit):
         parent=None,
         text_box_color="#282a36",
         read_only=False,
-        hide=False
+        hide=False,
+        scroll_mim_height=30
         ):
         
         super().__init__(parent)
@@ -133,7 +135,7 @@ class TextBox(QTextEdit):
         )      
         self.setReadOnly(read_only)
         # CUSTOM VERTICAL SCROLL BAR
-        self.vertical_scroll_bar = MyScrollBar()
+        self.vertical_scroll_bar = MyScrollBar(scroll_mim_height)
         self.setVerticalScrollBar(self.vertical_scroll_bar)
         self.setAcceptRichText(True)
         if hide is True:
@@ -145,7 +147,7 @@ class MyPushButton(QPushButton):
     def __init__(
         self,
         text = "",
-        color = "#8489a6",
+        color = "#8489a6", 
         border_radius = 10,
         font_size = 12,
         hover = "#c3ccdf",
@@ -291,37 +293,36 @@ class TextBoxWindow(QFrame):
         self.bottom_layout.addWidget(button)
 
 
-
 class MyScrollBar(QScrollBar):
 
-    def __init__(self):
+    def __init__(self, mim_height=30):
         super().__init__()
 
-        self.setStyleSheet("""
+        self.setStyleSheet(f"""
             /*VERTICAL SCROLL BAR*/
-            QScrollBar:vertical {
+            QScrollBar:vertical {{
                 border: none;
                 background-color: #282a36;
                 width: 10px;
                 margin: 10px 0 10px 0;
                 border-radius: 0px;
-            }
+            }}
 
             /*VERTICAL SCROLL BAR HENDLE*/
-            QScrollBar::handle:vertical {
+            QScrollBar::handle:vertical {{
                 background-color: #8489a6;
-                min-height: 30px;
+                min-height: {mim_height}px;
                 border-radius: 5px;
-            }
-            QScrollBar::handle:vertical:hover {
+            }}
+            QScrollBar::handle:vertical:hover {{
                 background-color: #c3ccdf;
-            }
-            QScrollBar::handle:vertical:pressed {
+            }}
+            QScrollBar::handle:vertical:pressed {{
                 background-color: #44475a
-            }
+            }}
 
             /*SCROLL BAR TOP BUTTOM*/
-            QScrollBar::sub-line:vertical {
+            QScrollBar::sub-line:vertical {{
                 border: none;
                 background-color: #8489a6;
                 height: 10px;
@@ -332,16 +333,16 @@ class MyScrollBar(QScrollBar):
                 border-radius: 5px;
                 subcontrol-position: top;
                 subcontrol-origin: margin;
-            }
-            QScrollBar::sub-line:vertical:hover {
+            }}
+            QScrollBar::sub-line:vertical:hover {{
                 background-color: #c3ccdf;
-            }
-            QScrollBar::sub-line:vertical:pressed {
+            }}
+            QScrollBar::sub-line:vertical:pressed {{
                 background-color: #44475a;
-            }
+            }}
 
             /*SCROLL BAR BOTTOM BUTTOM*/
-            QScrollBar::add-line:vertical {
+            QScrollBar::add-line:vertical {{
                 border: none;
                 background-color: #8489a6;
                 height: 10px;
@@ -352,44 +353,128 @@ class MyScrollBar(QScrollBar):
                 border-radius: 5px;
                 subcontrol-position: bottom;
                 subcontrol-origin: margin;
-            }
-            QScrollBar::add-line:vertical:hover {
+            }}
+            QScrollBar::add-line:vertical:hover {{
                 background-color: #c3ccdf;
-            }
-            QScrollBar::add-line:vertical:pressed {
+            }}
+            QScrollBar::add-line:vertical:pressed {{
                 background-color: #44475a;
-            }
+            }}
 
             /*RESET ARROW*/
-            QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+            QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {{
                 background: none;
-            }
-            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+            }}
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{
                 background: none;
-            }
+            }}
         """)
 
 
-class MyJumperSlider(QSlider):
+class MySlider(QSlider):
 
-    def __init__(self, orientation: Qt.Orientation):
-        super().__init__(orientation)
+    def __init__(
+        self,
+        margin = 3,
+        bg_size = 10,
+        bg_radius = 5,
+        bg_color = "#1b1e23",
+        bg_color_hover = "#1e2229",
+        handle_margin = -3,
+        handle_size = 16,
+        handle_radius = 8,
+        handle_color = "#8489a6",    
+        handle_color_hover = "#c3ccdf",
+        handle_color_pressed = "#44475a"
+    ):
+        super(MySlider, self).__init__()
 
-        self.setStyleSheet("color: blue")
-        
+        self.setStyleSheet(f"""
+            QSlider {{ margin: {margin}px;}}
+
+            /* HORIZONTAL */
+            QSlider::groove:horizontal {{
+                border-radius: {bg_radius}px;
+                height: {bg_size}px;
+                margin: 0px;
+                background-color: {bg_color};
+            }}
+            QSlider::groove:horizontal:hover {{
+                background-color: {bg_color_hover};
+            }}
+            QSlider::handle:horizontal {{
+                border: node;
+                height: 16px;
+                width: 16px;
+                margin: {handle_margin}px;
+                border-radius: {handle_radius}px;
+                background-color: {handle_color}
+            }}
+            QSlider::handle:horizontal:hover {{
+                background-color: {handle_color_hover};
+            }}
+            QSlider::handle:horizontal:pressed {{
+                background-color: {handle_color_pressed}
+            }}
+
+            /* VERTICAL */
+            QSlider::groove:vertical {{
+                border-radius: {bg_radius}px;
+                height: {bg_size};
+                margin: 0px;
+                background-color: {bg_color};
+            }}
+            Qlider::groove:vertical:hover {{
+                background-color: {bg_color_hover};
+            }}
+            Qlider::handle:vertical {{
+                border: node;
+                height: {handle_size}px;
+                width: {handle_size}px;
+                margin: {handle_margin}px;
+                border-radius: {handle_radius}px;
+                background-color: {handle_color};
+            }}
+            QSlider::handle:vertical:hover {{
+                background-color: {handle_color_hover};
+            }}
+            QSlider::handle:vertical:pressed {{
+                background-color: {handle_color_pressed}
+            }}
+        """
+        )
+
+
+class MyJumperSlider(MySlider):
+    
+    def __init__(self):
+        super(MyJumperSlider, self).__init__()    
+
+        self.steps = 0
+        self.button_pressed = False
+
     def set_steps(self, steps: int):
-        self.multiples = [int(i*(self.maximum()/steps)) for i in range(0, steps + 1)]
-        print(self.multiples)
+        self.steps = steps
+        self.multiples = [round(i*self.maximum()/steps) for i in range(0, steps + 1)]
+
+    def get_steps(self):
+        return self.steps
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        self.button_pressed = True
             
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
-        pos_x = int(event.pos().x() / (self.width()/self.maximum()))
-        
-        try:
-            if pos_x in self.multiples:
-                self.setValue(pos_x)
-        except:
-            pass
-
+        if self.button_pressed:
+            pos_x = round(event.pos().x() / (self.width()/self.maximum()))
+            try:
+                if pos_x in self.multiples:
+                    self.setValue(pos_x)
+            except:
+                pass
+      
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        self.button_pressed = False
+    
 
 class ExpandAnimation(QPropertyAnimation):
 

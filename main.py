@@ -1,13 +1,10 @@
-from pkgutil import extend_path
 import sys
 import os
 import time
 import threading
-from turtle import width
 
 from qt_core import *
 from app.char_codec import CharCodec
-from app.rsa import RSA
 from gui.widgets.my_widgets import ExpandAnimation, HiddenMenu
 
 # IMPORT MAIN WINDOW
@@ -21,8 +18,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("RSA Cryptography")
         self.setWindowIcon(QIcon("gui/images/icons/RSA.ico"))
         self.setAcceptDrops(True)
-        #self.setMouseTracking(True)
-
+        
         # SETUP MAIN WINDOW
         self.ui = UI_MainWindow()  
         self.ui.setup_ui(self)
@@ -57,9 +53,6 @@ class MainWindow(QMainWindow):
         
         # EXIBE A APLICAÇÂO
         self.show()
-
-    # def mouseMoveEvent(self, event: QMouseEvent) -> None:
-    #     print("sldkgjsdlg")
 
     def reset_selection(self):
         for btn in self.ui.left_menu.findChildren(QPushButton):
@@ -96,21 +89,27 @@ class MainWindow(QMainWindow):
         event.accept()
 
     def dropEvent(self, event: QDropEvent) -> None:
-        event.setDropAction(Qt.CopyAction)        
-        file_path = event.mimeData().urls()[0].toLocalFile()
+        event.setDropAction(Qt.CopyAction)
+        try:      
+            file_path = event.mimeData().urls()[0].toLocalFile()
+            self.read_file(file_path)
+            self.insertTextToProperlyPage(file_path)
 
-        self.read_file(file_path)
-        self.insertTextToProperlyPage(file_path)
-
+        except FileNotFoundError:
+            print("File or directory not found")
         event.accept()
 
     def open_file(self):
         default_path = os.path.expanduser("~")
-        file_path = QFileDialog.getOpenFileName(self, "Open File", dir=default_path + "/desktop")[0]
 
-        print(file_path)
-        self.read_file(file_path)
-        self.insertTextToProperlyPage(file_path)
+        try:
+            file_path = QFileDialog.getOpenFileName(self, "Open File", dir=default_path + "/desktop")[0]
+            print(file_path)
+            self.read_file(file_path)
+            self.insertTextToProperlyPage(file_path)
+
+        except FileNotFoundError:
+            print("File or directory not found")
 
     def insertTextToProperlyPage(self, file_path):
         if ".rsa" in file_path:
@@ -135,16 +134,21 @@ class MainWindow(QMainWindow):
         file.close()
 
     def save_file(self):
+        try:
+            self.text
+        except AttributeError:
+            print("Not a file to save!")
+            return
+
         default_path = os.path.expanduser("~")
-        save_path = QFileDialog.getSaveFileName(self, "Save As", dir=default_path + "/untitled.txt")
-        file = open(save_path + "/teste.txt", "w")
+        save_path = QFileDialog.getSaveFileName(self, "Save As", dir=default_path + "/untitled.txt")[0]      
 
         try:
+            file = open(save_path, "w")
             file.write(self.text)
-        except AttributeError:
-            print("Não há arquivo a ser salvo!")
-
-        file.close()
+            file.close()
+        except FileNotFoundError:
+            print("File or directory not found")
     
 
 if __name__ == "__main__":

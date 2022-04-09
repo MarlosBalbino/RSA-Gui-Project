@@ -18,8 +18,8 @@ class UI_MainWindow(object):
             parent.setObjectName("MainWindow")
         
         # SET INCINALS PARAMETERS
-        parent.resize(1280, 720)
-        parent.setMinimumSize(720, 480)
+        parent.resize(920, 480)
+        parent.setMinimumSize(720, 570)
 
         # CREATE MAIN FRAME
         self.main_frame = QFrame()
